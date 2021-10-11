@@ -1,68 +1,83 @@
-// import { AsyncStorage } from "react-native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const MFC_KEY = 'udacity_mobile_flash_cards';
+import { initialData } from "./_DATA";
+import { generateID } from "./utils";
+import { DECKS_STORAGE_KEY } from "./utils";
 
-function setStore() {
-  let decks = {};
-  AsyncStorage.setItem(MFC_KEY, JSON.stringify(decks));
-  return decks;
-}
+export const getDecks = () =>
+	AsyncStorage.getItem(DECKS_STORAGE_KEY).then((data) =>
+		data
+			? JSON.parse(data)
+			: AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(initialData))
+	);
 
-function getStore(results) {
-  return results === null ? setStore() : results;
-}
+export const getDeck = (id) => {
+	try {
+		return AsyncStorage.getItem(DECKS_STORAGE_KEY).then((data) =>
+			data ? JSON.parse(data)[id] : null
+		);
+	} catch {
+		alert("Failed to get the deck!");
+	}
+};
 
-export function _getDecks() {
-  return AsyncStorage.getItem(MFC_KEY).then(getStore);
-}
+export const addCardToDeck = (title, card) => {
+	const trimmedTitle = title.replace(/ /g, "");
 
-export function _getDeckByTitle(title) {
-  return AsyncStorage.getItem(MFC_KEY).then((results) => results[title]);
-}
+	try {
+		return getDeck(trimmedTitle).then((data) =>
+			AsyncStorage.mergeItem(
+				DECKS_STORAGE_KEY,
+				JSON.stringify({
+					[trimmedTitle]: {
+						questions: [...data.questions, card],
+					},
+				})
+			)
+		);
+	} catch {
+		alert("Failed to add card!");
+	}
+};
 
-export function _saveDeck(title) {
-  return AsyncStorage.mergeItem(
-    MFC_KEY,
-    JSON.stringify({
-      [title]: {
-        title: title,
-        questions: [],
-      },
-    }),
-  );
-}
+export const saveDeckTitle = (deck, title) => {
+	try {
+		return AsyncStorage.mergeItem(
+			DECKS_STORAGE_KEY,
+			JSON.stringify({
+				[deck]: {
+					title,
+					id: generateID(),
+					questions: [],
+				},
+			})
+		);
+	} catch {
+		alert("Failed to add deck!");
+	}
+};
 
-export function _deleteDeck(title) {
-  return AsyncStorage.getItem(MFC_KEY).then((res) => {
-    const data = JSON.parse(res);
-    data[title] = undefined;
-    delete data[title];
-    AsyncStorage.setItem(MFC_KEY, JSON.stringify(data));
-  });
-}
+export const removeDeck = (title) => {
+	try {
+		return AsyncStorage.getItem(DECKS_STORAGE_KEY).then((result) => {
+			const data = JSON.parse(result);
+			delete data[title];
 
-export function _addCard({ question, answer, name }) {
-  return AsyncStorage.getItem(MFC_KEY).then((results) => {
-    let decks = { ...JSON.parse(results) };
-    decks = {
-      ...decks,
-      [name]: {...decks[name], questions: decks[name].questions.concat([{ question, answer }]),
-      },
-    };
-    AsyncStorage.mergeItem(MFC_KEY, JSON.stringify(decks));
-  });
-}
-export function _deleteCard(question, deck) {
- return AsyncStorage.getItem(MFC_KEY).then((results) => {
-   let decks = { ...JSON.parse(results) };
-   decks = {
-     ...decks,
-     [deck]: {
-       ...decks[deck],
-       questions: decks[deck].questions.filter((q) => question !== q.question),
-     },
-   };
-   AsyncStorage.mergeItem(MFC_KEY, JSON.stringify(decks));
- })
-}
+			return AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(data)).then(() =>
+				alert("Deck was successfully deleted!")
+			);
+		});
+	} catch {
+		alert("Failed to delete deck!");
+	}
+};
+
+export const reset = () => {
+	try {
+		return AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(initialData)).then(() =>
+			alert("Reset successful!")
+		);
+	} catch {
+		alert("Reset Failed!");
+	}
+};

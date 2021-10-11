@@ -1,31 +1,23 @@
 import React, { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import 'react-native-gesture-handler';
 import { Text, View } from 'react-native';
 import { Button, Icon, Header } from 'react-native-elements';
-import { Provider } from 'react-redux';
-import { setLocalNotification } from './utils/notifications';
-
-import {store} from './redux/store'
-import { AppNavigator } from './components/AppNavigator';
-import { initializeDeckData } from './redux/slices.decks.reducers';
-
-
+import { setLocalNotification } from './utils/utils';
+import { AppNavigator } from './utils/AppNavigator';
 
 export default function App() {
-useEffect(() => {
- //setLocalNotification()
- initializeDeckData()
-}, []);
+  useEffect(() => {
+    setLocalNotification();
+  }, []);
 
   return (
     <SafeAreaProvider>
-      <Provider store={store}>
-        <View style={{ flex: 1 }}>
-          <StatusBar style='auto' />
-          {/* <AppNavigator /> */}
-        </View>
-      </Provider>
+      <View style={{ flex: 1 }}>
+        <StatusBar style='auto' />
+        <AppNavigator />
+      </View>
     </SafeAreaProvider>
   );
 }
