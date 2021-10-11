@@ -1,5 +1,5 @@
 // import { AsyncStorage } from "react-native";
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const MFC_KEY = 'udacity_mobile_flash_cards';
 

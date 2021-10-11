@@ -2,7 +2,8 @@ import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
 
 import { FL_KEY } from "./api";
-import { AsyncStorage } from "react-native";
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const NOTIFICATION_KEY = `${FL_KEY}:Notifications`;
 
