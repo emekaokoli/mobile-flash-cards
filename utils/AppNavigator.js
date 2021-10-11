@@ -41,7 +41,7 @@ export const AppNavigator = () => {
                 color='#00ccff'
                 onPress={() =>
                   navigation.navigate('NewDeck', {
-                    decks,
+                    NewCard,
                   })
                 }
               />
