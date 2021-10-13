@@ -40,9 +40,7 @@ export const AppNavigator = () => {
                 title='Add'
                 color='#00ccff'
                 onPress={() =>
-                  navigation.navigate('NewDeck', {
-                    NewCard,
-                  })
+                  navigation.navigate('NewCard')
                 }
               />
             ),
