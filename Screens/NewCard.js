@@ -49,10 +49,6 @@ export const NewCard = ({ navigation, route }) => {
       />
       <CheckBox
         checked={check_props}
-        // initial={null}
-        // formHorizontal={true}
-        // labelHorizontal={false}
-        // buttonColor={"#444"}
         onPress={(value) => setSelectedAnswer(value)}
       />
       <TouchableOpacity
