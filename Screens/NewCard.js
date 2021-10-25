@@ -17,25 +17,27 @@ export const NewCard = ({ navigation, route }) => {
 
   const handleSubmit = () => {
     if (input !== '' && selectedAnswer !== null) {
-      console.log('deck');
-      console.log(route);
-      const deckTitle = route.params.deckTitle;
+      
+      if (route.params) {
+        const deckTitle = route.params.deckTitle;
 
-      const deck = deckTitle.replace(/ /g, '');
-
-      const card = {
-        question: input,
-        answer: selectedAnswer,
-      };
-      addCardToDeck(deck, card).then(() => {
-        getDeck(deck).then((updatedDeck) =>
-          navigation.navigate('Deck', {
-            deckTitle,
-            deck: updatedDeck,
-            numberOfCards: updatedDeck.questions.length,
-          }),
-        );
-      });
+        const deck = deckTitle.replace(/ /g, '');
+        console.log('deck');
+        console.log(deck);
+        const card = {
+          question: input,
+          answer: selectedAnswer,
+        };
+        addCardToDeck(deck, card).then(() => {
+          getDeck(deck).then((updatedDeck) =>
+            navigation.navigate('Deck', {
+              deckTitle,
+              deck: updatedDeck,
+              numberOfCards: updatedDeck.questions.length,
+            }),
+          );
+        });
+      }
     } else {
       alert('You must fill the question and the answer!');
     }

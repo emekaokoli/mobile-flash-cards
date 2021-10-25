@@ -5,7 +5,7 @@ import { getDecks, saveDeckTitle } from "../utils/api";
 
 export const NewDeck = ({ navigation, route }) => {
 	const { decks } = route.params;
-	console.log(decks);
+	//console.log(decks);
 	const [input, updateInput] = useState("");
 	const isDisabled = () => (input === "" ? true : false);
 

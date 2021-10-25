@@ -4,7 +4,7 @@ import { ActivityIndicator, Text, View } from 'react-native';
 import { getDeck } from '../utils/api';
 import { clearLocalNotification, setLocalNotification } from '../utils/utils';
 import AnswerQuiz from './AnswerQuiz';
-import QuestionQuiz from './QuestionQuiz';
+import {QuestionQuiz} from './QuestionQuiz';
 
 export const Quiz = ({ route, navigation }) => {
   const { deckTitle } = route.params;
