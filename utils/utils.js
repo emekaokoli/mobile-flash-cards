@@ -8,8 +8,7 @@ const NOTIFICATION_KEY = "MobileFlashcards:notifications";
 
 export const clearLocalNotification = () => {
 	return AsyncStorage.removeItem(NOTIFICATION_KEY).then(
-		Notifications.cancelAllScheduledNotificationsAsync()
-	);
+		Notifications.cancelAllScheduledNotificationsAsync);
 };
 
 export const setLocalNotification = () => {
@@ -19,7 +18,7 @@ export const setLocalNotification = () => {
 			if (data === null) {
 				Permissions.askAsync(Permissions.NOTIFICATIONS).then(({ status }) => {
 					if (status === "granted") {
-						Notifications.cancelAllScheduledNotificationsAsync();
+						Notifications.cancelAllScheduledNotificationsAsync;
 
 						let tomorrow = new Date();
 						tomorrow.setDate(tomorrow.getDate() + 1);
@@ -28,8 +27,8 @@ export const setLocalNotification = () => {
 
 						Notifications.scheduleNotificationAsync({
 							content: {
-								title: "Let's practice!",
-								body: "Don't forget to practice with your flashcards today!",
+								title: "Daily Quiz",
+								body: "Please Don't forget to practice today!",
 							},
 							trigger: {
 								time: tomorrow,
@@ -37,9 +36,9 @@ export const setLocalNotification = () => {
 							},
 						});
 
-						AsyncStorage.setItem(NOTIFICATION_KEY, JSON.stringify(true));
+						AsyncStorage.setItem(NOTIFICATION_KEY, JSON.stringify(true)).then(respose=>response).catch(error=>error.message);
 					}
-				});
+				}).catch(error => error.message)
 			}
 		});
 };
