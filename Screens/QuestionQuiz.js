@@ -2,7 +2,8 @@ import React from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
 export const QuestionQuiz = ({ thisDeck, onFlipPress, index, onAnswer }) => {
-
+console.log('thisDeck');
+console.log(thisDeck);
 	return (
 		<View style={styles.view}>
 			{thisDeck.questions.length !== 0 ? (
