@@ -1,17 +1,12 @@
 import { useIsFocused } from '@react-navigation/core';
-import React, { useState, useEffect,useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { getDeck } from '../utils/api';
 // import { scheduleLocalNotification } from '../utils/utils';
 import * as Notifications from 'expo-notifications';
 import AnswerQuiz from './AnswerQuiz';
-import {QuestionQuiz} from './QuestionQuiz';
+import { QuestionQuiz } from './QuestionQuiz';
 import { scheduleLocalNotification } from '../utils/utils';
-
-
-
-
-
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -21,13 +16,10 @@ Notifications.setNotificationHandler({
   }),
 });
 
-
 // export const clearLocalNotification = () => {
 // 	return AsyncStorage.removeItem(NOTIFICATION_KEY).then(
 // 		Notifications.cancelAllScheduledNotificationsAsync);
 // };
-
-
 
 export const Quiz = ({ route, navigation }) => {
   const { deckTitle } = route.params;
@@ -38,11 +30,10 @@ export const Quiz = ({ route, navigation }) => {
   const [incorrect, setIncorrect] = useState(0);
   const [buttonText, setButtonText] = useState('Next Card');
 
-    //const [expoPushToken, setExpoPushToken] = useState('');
-    const [notification, setNotification] = useState(false);
-    const notificationListener = useRef();
-    const responseListener = useRef();
-
+  //const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
   useEffect(() => {
     // registerForPushNotificationsAsync().then((token) =>
@@ -66,8 +57,6 @@ export const Quiz = ({ route, navigation }) => {
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
-
-  
 
   const resetQuiz = () => {
     setCorrect(0);
@@ -105,20 +94,15 @@ export const Quiz = ({ route, navigation }) => {
     setIsQuestion(false);
   };
 
-  const handleNextCard =  () => {
-    if (index + 1 === deckLength()){
-      
-         scheduleLocalNotification().then(() =>
-           navigation.navigate('Score', {
-             correctAnswers: correct,
-             incorrectAnswers: incorrect,
-             deckTitle,
-           }),
-         ).catch((err) => alert(err))
-          
-      
-         
-      
+  const handleNextCard = async () => {
+    if (index + 1 === deckLength()) {
+      await scheduleLocalNotification();
+
+      return navigation.navigate('Score', {
+        correctAnswers: correct,
+        incorrectAnswers: incorrect,
+        deckTitle,
+      });
     }
     if (index + 2 === deckLength() || deckLength() === 1) {
       setButtonText('Show Score');
@@ -150,4 +134,3 @@ export const Quiz = ({ route, navigation }) => {
     </View>
   );
 };
-

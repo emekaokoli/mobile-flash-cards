@@ -2,12 +2,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 
-
-
 export const DECKS_STORAGE_KEY = 'MobileFlashcards:decks';
 const NOTIFICATION_KEY = 'MobileFlashcards:notifications';
 
-export const scheduleLocalNotification = async() => {
+export const scheduleLocalNotification = async () => {
   AsyncStorage.getItem(NOTIFICATION_KEY)
     .then(JSON.parse)
     .then((data) => {

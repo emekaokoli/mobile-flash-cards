@@ -14,7 +14,7 @@ export const Score = ({ route, navigation }) => {
 				</Text>
 			</View>
 			<View>
-				<TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Deck")}>
+				<TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Home")}>
 					<Text style={styles.buttonText}>Back to Deck</Text>
 				</TouchableOpacity>
 				<TouchableOpacity

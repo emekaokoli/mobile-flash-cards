@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator} from '@react-navigation/native-stack';
 import { Button } from 'react-native-elements';
 import { Score } from '../Screens/Score';
 import {Deck} from '../Screens/DeckScreen';
@@ -49,13 +49,17 @@ export const AppNavigator = () => {
         <Stack.Screen
           name='Deck'
           component={ListDecks}
-          options={({ route }) => ({
-            title: route.params.deckTitle,
-            headerStyle: {
-              backgroundColor: '#444',
-            },
-            headerTintColor: '#fff',
-          })}
+          options={({ route }) => {
+            const deckTitle = route.params.deckTitle
+            return {
+              title: deckTitle,
+              headerStyle: {
+                backgroundColor: '#444',
+              },
+              headerTintColor: '#fff',
+            };
+          }
+          }
         />
         <Stack.Screen
           name='NewCard'
@@ -89,9 +93,9 @@ export const AppNavigator = () => {
             },
             headerTintColor: '#fff',
             headerLeft: () => (
-              <HeaderBackButton
-                label='Deck'
-                tintColor='#fff'
+              <Button
+                title='Deck'
+                color='#fff'
                 onPress={() => navigation.navigate('Deck')}
               />
             ),
