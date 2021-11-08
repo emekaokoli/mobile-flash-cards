@@ -46,7 +46,7 @@ export const addCardToDeck = (title, card) => {
         DECKS_STORAGE_KEY,
         JSON.stringify(
           storeData,
-          getCircularReplacer()
+          // getCircularReplacer()
         ),
       )//.catch((error) => alert(`failed to merge ${error}`)),
 		}).catch((error) => alert(`failed to new add card to the deck ${error}`));
