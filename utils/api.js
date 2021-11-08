@@ -23,7 +23,7 @@ export const getDecks = () =>
       ? JSON.parse(data)
       : AsyncStorage.setItem(
           DECKS_STORAGE_KEY,
-          JSON.stringify(initialData, getCircularReplacer()),
+          JSON.stringify(initialData),
         ),
   );
 
@@ -36,20 +36,20 @@ export const addCardToDeck = (title, card) => {
   const trimmedTitle = title.replace(/ /g, '');
 
   return getDeck(trimmedTitle)
-    .then((data) =>
-      AsyncStorage.mergeItem(
-        DECKS_STORAGE_KEY,
-        JSON.stringify(
-          {
+    .then((data) => {
+			const storeData = {
             [trimmedTitle]: {
               questions: [...data.questions, card],
-            },
-          },
+            }
+          };
+			return AsyncStorage.mergeItem(
+        DECKS_STORAGE_KEY,
+        JSON.stringify(
+          storeData,
           getCircularReplacer()
         ),
-      ).catch((error) => alert(`failed to merge ${error}`)),
-    )
-    .catch((error) => alert(`fail to add card to the deck ${error}`));
+      )//.catch((error) => alert(`failed to merge ${error}`)),
+		}).catch((error) => alert(`failed to new add card to the deck ${error}`));
 };
 
 export const saveDeckTitle = async (deck, title) => {
@@ -80,7 +80,7 @@ export function removeDeck(title) {
 
       return AsyncStorage.setItem(
         DECKS_STORAGE_KEY,
-        JSON.stringify(data, getCircularReplacer()),
+        JSON.stringify(data),
       ).then(() => alert('Deck was successfully deleted!'));
     })
     .catch((error) => alert(`Failed to delete deck! ${error}`));
@@ -89,7 +89,7 @@ export function removeDeck(title) {
 export const reset = () =>
   AsyncStorage.setItem(
     DECKS_STORAGE_KEY,
-    JSON.stringify(initialData, getCircularReplacer()),
+    JSON.stringify(initialData),
   )
     .then(() => alert('Reset successful!'))
     .catch((error) => alert(`Reset Failed! ${error}`));
