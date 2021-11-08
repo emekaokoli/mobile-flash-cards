@@ -1,83 +1,95 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { initialData } from "./_DATA";
-import { generateID } from "./utils";
-import { DECKS_STORAGE_KEY } from "./utils";
+import { initialData } from './_DATA';
+import { generateID } from './utils';
+import { DECKS_STORAGE_KEY } from './utils';
+
+const getCircularReplacer = () => {
+  const seen = new WeakSet();
+  return (key, value) => {
+    if (typeof value === 'object' && value !== null) {
+      if (seen.has(value)) {
+        return;
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+};
 
 export const getDecks = () =>
-	AsyncStorage.getItem(DECKS_STORAGE_KEY).then((data) =>
-		data
-			? JSON.parse(data)
-			: AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(initialData))
-	);
+  AsyncStorage.getItem(DECKS_STORAGE_KEY).then((data) =>
+    data
+      ? JSON.parse(data)
+      : AsyncStorage.setItem(
+          DECKS_STORAGE_KEY,
+          JSON.stringify(initialData, getCircularReplacer()),
+        ),
+  );
 
-export const getDeck = (id) => {
-	try {
-		return AsyncStorage.getItem(DECKS_STORAGE_KEY).then((data) =>
-			data ? JSON.parse(data)[id] : null
-		);
-	} catch {
-		alert("Failed to get the deck!");
-	}
-};
+export const getDeck = (id) =>
+  AsyncStorage.getItem(DECKS_STORAGE_KEY)
+    .then((data) => (data ? JSON.parse(data)[id] : null))
+    .catch((error) => alert('Failed to get the deck!'));
 
 export const addCardToDeck = (title, card) => {
-	const trimmedTitle = title.replace(/ /g, "");
+  const trimmedTitle = title.replace(/ /g, '');
 
-	try {
-		return getDeck(trimmedTitle).then((data) =>
-			AsyncStorage.mergeItem(
-				DECKS_STORAGE_KEY,
-				JSON.stringify({
-					[trimmedTitle]: {
-						questions: [...data.questions, card],
-					},
-				})
-			)
-		);
-	} catch {
-		alert("Failed to add card!");
-	}
+  return getDeck(trimmedTitle)
+    .then((data) =>
+      AsyncStorage.mergeItem(
+        DECKS_STORAGE_KEY,
+        JSON.stringify(
+          {
+            [trimmedTitle]: {
+              questions: [...data.questions, card],
+            },
+          },
+          getCircularReplacer()
+        ),
+      ).catch((error) => alert(`failed to merge ${error}`)),
+    )
+    .catch((error) => alert(`fail to add card to the deck ${error}`));
 };
 
-export const saveDeckTitle = (deck, title) => {
-	try {
-		return AsyncStorage.mergeItem(
-			DECKS_STORAGE_KEY,
-			JSON.stringify({
-				[deck]: {
-					title,
-					id: generateID(),
-					questions: [],
-				},
-			})
-		);
-	} catch {
-		alert("Failed to add deck!");
-	}
+export const saveDeckTitle = async (deck, title) => {
+  try {
+    return await AsyncStorage.mergeItem(
+      DECKS_STORAGE_KEY,
+      JSON.stringify(
+        {
+          [deck]: {
+            title,
+            id: generateID(),
+            questions: [],
+          },
+        },
+        getCircularReplacer(),
+      ),
+    );
+  } catch {
+    alert('Failed to add deck!');
+  }
 };
 
-export const removeDeck = (title) => {
-	try {
-		return AsyncStorage.getItem(DECKS_STORAGE_KEY).then((result) => {
-			const data = JSON.parse(result);
-			delete data[title];
+export function removeDeck(title) {
+  return AsyncStorage.getItem(DECKS_STORAGE_KEY)
+    .then((result) => {
+      const data = JSON.parse(result);
+      delete data[title];
 
-			return AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(data)).then(() =>
-				alert("Deck was successfully deleted!")
-			);
-		});
-	} catch {
-		alert("Failed to delete deck!");
-	}
-};
+      return AsyncStorage.setItem(
+        DECKS_STORAGE_KEY,
+        JSON.stringify(data, getCircularReplacer()),
+      ).then(() => alert('Deck was successfully deleted!'));
+    })
+    .catch((error) => alert(`Failed to delete deck! ${error}`));
+}
 
-export const reset = () => {
-	try {
-		return AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(initialData)).then(() =>
-			alert("Reset successful!")
-		);
-	} catch {
-		alert("Reset Failed!");
-	}
-};
+export const reset = () =>
+  AsyncStorage.setItem(
+    DECKS_STORAGE_KEY,
+    JSON.stringify(initialData, getCircularReplacer()),
+  )
+    .then(() => alert('Reset successful!'))
+    .catch((error) => alert(`Reset Failed! ${error}`));

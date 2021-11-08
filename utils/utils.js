@@ -7,6 +7,7 @@ export const DECKS_STORAGE_KEY = 'MobileFlashcards:decks';
 const NOTIFICATION_KEY = 'MobileFlashcards:notifications';
 
 export const scheduleLocalNotification = async () => {
+  
   AsyncStorage.getItem(NOTIFICATION_KEY)
     .then(JSON.parse)
     .then((data) => {

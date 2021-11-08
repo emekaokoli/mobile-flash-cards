@@ -8,6 +8,7 @@ import { registerForPushNotificationsAsync, scheduleLocalNotification } from './
 import { AppNavigator } from './utils/AppNavigator';
 import * as Notifications from 'expo-notifications';
 
+
 export default function App() {
 
   Notifications.setNotificationHandler({
