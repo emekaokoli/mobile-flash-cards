@@ -1,11 +1,18 @@
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 
-export const DECKS_STORAGE_KEY = 'MobileFlashcards:decks';
-const NOTIFICATION_KEY = 'MobileFlashcards:notifications';
 
+export const DECKS_STORAGE_KEY = 'DECKS_STORAGE';
+const NOTIFICATION_KEY = 'NOTIFICATION';
+
+export const clearLocalNotification = async () =>
+  AsyncStorage.removeItem(NOTIFICATION_KEY) .then(
+    Notifications.cancelAllScheduledNotificationsAsync,
+  );
+  
 export const scheduleLocalNotification = async () => {
   
   AsyncStorage.getItem(NOTIFICATION_KEY)
@@ -17,23 +24,26 @@ export const scheduleLocalNotification = async () => {
             if (status === 'granted') {
               let tomorrow = new Date();
               tomorrow.setDate(tomorrow.getDate() + 1);
-              tomorrow.setHours(20);
+              tomorrow.setHours(19);
               tomorrow.setMinutes(0);
 
               Notifications.scheduleNotificationAsync({
                 content: {
                   title: 'Daily Quiz',
-                  body: "Please Don't forget to practice today!",
+                  body: "Practiced today!",
                 },
-                trigger: {
-                  time: tomorrow,
-                  repeat: 'day',
+                ios: {
+                  sound: true,
+                },
+                android: {
+                  sound: true,
+                  priority: 'high',
+                  sticky: false,
+                  vibrate: true,
                 },
               });
 
               AsyncStorage.setItem(NOTIFICATION_KEY, JSON.stringify(true))
-                .then((respose) => response)
-                .catch((error) => error.message);
             }
           })
           .catch((error) => error.message);
@@ -71,8 +81,4 @@ export const scheduleLocalNotification = async () => {
   }
 
   return token;
-}
-
-export const generateID = () =>
-  Math.random().toString(36).substring(2, 15) +
-  Math.random().toString(36).substring(2, 15);
+};

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { initialData } from './_DATA';
-import { generateID } from './utils';
+import { initialData } from './data';
+import { uuid } from 'uuidv4';
 import { DECKS_STORAGE_KEY } from './utils';
 
 const getCircularReplacer = () => {
@@ -17,40 +17,31 @@ const getCircularReplacer = () => {
   };
 };
 
-export const getDecks = () =>
-  AsyncStorage.getItem(DECKS_STORAGE_KEY).then((data) =>
-    data
-      ? JSON.parse(data)
-      : AsyncStorage.setItem(
-          DECKS_STORAGE_KEY,
-          JSON.stringify(initialData),
-        ),
-  );
+export const getDecks = () => !AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(initialData)) ? AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(initialData)) : AsyncStorage.getItem(DECKS_STORAGE_KEY).then((data) => JSON.parse(data))
+
 
 export const getDeck = (id) =>
   AsyncStorage.getItem(DECKS_STORAGE_KEY)
     .then((data) => (data ? JSON.parse(data)[id] : null))
     .catch((error) => alert('Failed to get the deck!'));
 
-export const addCardToDeck = (title, card) => {
-  const trimmedTitle = title.replace(/ /g, '');
-
-  return getDeck(trimmedTitle)
+export const addCardToDeck = (title, card) =>
+  getDeck(title)
     .then((data) => {
-			const storeData = {
-            [trimmedTitle]: {
-              questions: [...data.questions, card],
-            }
-          };
-			return AsyncStorage.mergeItem(
+      const storeData = {
+        [title]: {
+          questions: [...data.questions, card],
+        },
+      };
+      return AsyncStorage.mergeItem(
         DECKS_STORAGE_KEY,
         JSON.stringify(
           storeData,
           // getCircularReplacer()
         ),
-      )//.catch((error) => alert(`failed to merge ${error}`)),
-		}).catch((error) => alert(`failed to new add card to the deck ${error}`));
-};
+      ); //.catch((error) => alert(`failed to merge ${error}`)),
+    })
+    .catch((error) => alert(`failed to add new card to the deck ${error}`));
 
 export const saveDeckTitle = async (deck, title) => {
   try {
@@ -60,11 +51,10 @@ export const saveDeckTitle = async (deck, title) => {
         {
           [deck]: {
             title,
-            id: generateID(),
+            id: uuid(),
             questions: [],
           },
-        },
-        getCircularReplacer(),
+        }
       ),
     );
   } catch {
@@ -72,19 +62,17 @@ export const saveDeckTitle = async (deck, title) => {
   }
 };
 
-export function removeDeck(title) {
-  return AsyncStorage.getItem(DECKS_STORAGE_KEY)
-    .then((result) => {
-      const data = JSON.parse(result);
-      delete data[title];
+export const removeDeck = (title) => AsyncStorage.getItem(DECKS_STORAGE_KEY)
+.then((result) => {
+  const data = JSON.parse(result);
+  delete data[title];
 
-      return AsyncStorage.setItem(
-        DECKS_STORAGE_KEY,
-        JSON.stringify(data),
-      ).then(() => alert('Deck was successfully deleted!'));
-    })
-    .catch((error) => alert(`Failed to delete deck! ${error}`));
-}
+  return AsyncStorage.setItem(
+    DECKS_STORAGE_KEY,
+    JSON.stringify(data),
+  ).then(() => alert('Deck successfully deleted!'));
+})
+.catch((error) => alert(`Failed to delete deck! ${error}`))
 
 export const reset = () =>
   AsyncStorage.setItem(
