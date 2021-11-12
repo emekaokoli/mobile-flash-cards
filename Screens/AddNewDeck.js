@@ -23,16 +23,20 @@ export const AddNewDeck = ({ route }) => {
   const title = input || route.params?.Title;
 
   const handleAddNewDeck = async () => {
-    const decks = await getDeck(input);
-    if (decks) {
-      alert('Deck already exist');
-    } else {
-      const deck = await saveDeckTitle(input, title);
-      navigation.navigate('Deck', {
-        title: input,
-        deck: deck.questions.length,
-      });
-    }
+  try {
+      const decks = await getDeck(input);
+      if (decks) {
+        alert('Deck already exist');
+      } else {
+        const deck = await saveDeckTitle(input, title);
+        navigation.navigate('Deck', {
+          Title: input,
+          deck: deck.questions.length,
+        });
+      }
+  } catch (error) {
+    console.log(error);
+  }
 
   };
 
@@ -40,9 +44,9 @@ export const AddNewDeck = ({ route }) => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={100}
-      style={styles.keyboard}
+      style={styles.container}
     >
-      <View style={styles.newDeckContainer}>
+      <View style={styles.innerContainer}>
         <Text style={styles.title}>Add new Deck</Text>
         <Text style={styles.innerTitle}> Whats the name of your deck?</Text>
 
@@ -53,23 +57,29 @@ export const AddNewDeck = ({ route }) => {
           onChangeText={(text) => setInput(text)}
         />
 
-        <TouchableOpacity
+        <Button
+          title='Add Deck'
           onPress={handleAddNewDeck}
           disabled={disabledButton}
           style={styles.button}
-        >
-          <Text style={styles.enterText}>Add Deck</Text>
-        </TouchableOpacity>
+        />
       </View>
     </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  newDeckContainer: {
+  container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  innerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    padding: 20,
   },
   title: {
     fontSize: 30,
@@ -90,11 +100,7 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 8,
   },
-  keyboard: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+
   textInput: {
     width: 300,
     height: 40,

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { initialData } from './data';
-import { uuid } from 'uuidv4';
+import {  v4 as uuid } from 'uuidv4';
 import { DECKS_STORAGE_KEY } from './utils';
 
 const getCircularReplacer = () => {

@@ -19,7 +19,7 @@ export const AddNewCard = ({ route }) => {
 
   const disabledButton = question.length === 0 || answers.length === 0;
 
-  const { Title:title } = route.params;
+  const title  = route.params?.Title;
 
   const navigation = useNavigation();
 
@@ -34,7 +34,7 @@ export const AddNewCard = ({ route }) => {
       console.log(deck.questions.length);
       await addCardToDeck(title, card);
       navigation.navigate('Deck', {
-        title,
+        Title: title,
         deck,
         numberOfCards: deck.questions.length,
       });
