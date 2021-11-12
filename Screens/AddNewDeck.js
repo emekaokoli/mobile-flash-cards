@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { getDeck, saveDeckTitle } from '../utils/api';
+import { getDeck, getDecks, saveDeckTitle } from '../utils/api';
 
 const { useState } = React;
 
@@ -18,22 +18,22 @@ export const AddNewDeck = ({ route }) => {
   const navigation = useNavigation();
   const [input, setInput] = useState('');
 
-  const disabledButton = () => (input === '' ? true : false);
+  const disabledButton = input.length === 0;
 
-  const handleAddNewDeck = () => {
-    getDecks().then((data) => {
-      if (input === '') return;
-      if (!data[input]) {
-        return saveDeckTitle(input.trim(), input).then(() =>
-          navigation.navigate('DeckItems', {
-            Title: input,
-            numberOfCards: 0,
-          }),
-        );
-      } else {
-        alert('Deck name exist. try another name.');
-      }
-    });
+  const title = input || route.params?.Title;
+
+  const handleAddNewDeck = async () => {
+    const decks = await getDeck(input);
+    if (decks) {
+      alert('Deck already exist');
+    } else {
+      const deck = await saveDeckTitle(input, title);
+      navigation.navigate('Deck', {
+        title: input,
+        deck: deck.questions.length,
+      });
+    }
+
   };
 
   return (
@@ -55,7 +55,7 @@ export const AddNewDeck = ({ route }) => {
 
         <TouchableOpacity
           onPress={handleAddNewDeck}
-          disabled={disabledButton()}
+          disabled={disabledButton}
           style={styles.button}
         >
           <Text style={styles.enterText}>Add Deck</Text>
