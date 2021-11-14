@@ -20,10 +20,13 @@ const getCircularReplacer = () => {
 export const getDecks = () => !AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(initialData)) ? AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(initialData)) : AsyncStorage.getItem(DECKS_STORAGE_KEY).then((data) => JSON.parse(data))
 
 
-export const getDeck = (id) =>
+export const getDeck = (params) => 
   AsyncStorage.getItem(DECKS_STORAGE_KEY)
-    .then((data) => (data ? JSON.parse(data)[id] : null))
-    .catch((error) => alert('Failed to get the deck!'));
+    .then((data) => {
+      const decks = JSON.parse(data);
+      return decks[params];
+    })
+    .catch((error) => alert(`Failed to get the deck!${error}`));
 
 export const addCardToDeck = (title, card) =>
   getDeck(title)

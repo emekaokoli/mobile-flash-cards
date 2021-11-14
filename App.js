@@ -12,13 +12,9 @@ import { Quiz } from './Screens/Quiz';
 import { ListDeckItems } from './Screens/ListDeckItems';
 import { AddNewCard } from './Screens/AddNewCard';
 import { AddNewDeck } from './Screens/AddNewDeck';
-import {
-  registerForPushNotificationsAsync,
-  scheduleLocalNotification
-} from './utils/utils';
+import { registerForPushNotificationsAsync } from './utils/utils';
 import { AppHome } from './utils/AppHome';
-
-
+import { QuizComplete } from './Screens/QuizComplete';
 
 export default function App() {
   const Stack = createStackNavigator();
@@ -28,7 +24,6 @@ export default function App() {
   const notificationListener = useRef();
   const responseListener = useRef();
 
-
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
@@ -36,11 +31,6 @@ export default function App() {
       shouldSetBadge: false,
     }),
   });
-
-  useEffect(() => {
-    
-    scheduleLocalNotification();
-  }, []);
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) =>
@@ -92,7 +82,7 @@ export default function App() {
 
             <Stack.Screen name='AddCard' component={AddNewCard} />
             <Stack.Screen name='Quiz' component={Quiz} />
-            {/* <Stack.Screen name='Score' component={ScoreScreen} /> */}
+            <Stack.Screen name='QuizComplete' component={QuizComplete} />
           </Stack.Navigator>
         </View>
       </NavigationContainer>

@@ -30,36 +30,46 @@ export const DeckHome = () => {
     isFocused && fetchDecks();
   }, [isFocused]);
 
+  const totalDecks = Object.keys(decks)?.length;
+
   return (
-    <View style={styles.cardContainer}>
+    <View style={styles.container}>
       {loading === true ? (
-        <ActivityIndicator size='large' color='tomato' />
-      ) : decks && Object.keys(decks)?.length > 0 ? (
-        <ScrollView>
+        <View style={styles.loading}>
+          <ActivityIndicator size='large' color='tomato' />
+        </View>
+      ) : decks && totalDecks > 0 ? (
+        <ScrollView contentContainerStyle={styles.innerContainer}>
           {Object.keys(decks)?.map((item) => {
-            const numberOfCards = decks[item].questions.length;
+            const { title, questions } = decks[item];
+            const numOfQuestions = questions.length;
+            const numOfCards = numOfQuestions > 0 ? numOfQuestions : 0;
+
             return (
-              <TouchableOpacity
-                key={item}
+              <View key={item} style={styles.deck}>
+                <TouchableOpacity
                 style={styles.cards}
                 onPress={() =>
                   navigation.navigate('Deck', {
-                    Title: decks[item]?.title,
-                    numberOfCards,
+                    Title: title,
+                    numOfCards,
                   })
                 }
               >
-                <Text style={styles.cardTitle}>{decks[item]?.title}</Text>
-                <Text style={styles.cardsNumber}>
-                  {numberOfCards} {numberOfCards === 1 ? 'card' : 'cards'}
-                </Text>
+                <View style={styles.card}>
+                  <Text style={styles.title}>{title}</Text>
+                  <Text style={styles.numOfCards}>
+                     {numOfCards} {numOfCards === 1 ? 'card' : 'cards'}
+                  </Text>
+                </View>
               </TouchableOpacity>
+              </View>
             );
           })}
         </ScrollView>
       ) : (
-        <View style={styles.nullCards}>
-          <Text style={styles.nullCardsText}>You don't have decks!</Text>
+        <View style={styles.emptyCard}>
+          <Text style={styles.emptyCardText}>You don't have decks!</Text>
         </View>
       )}
     </View>
@@ -67,31 +77,53 @@ export const DeckHome = () => {
 };
 
 const styles = StyleSheet.create({
-  cardContainer: {
+  container: {
     flex: 1,
-    justifyContent: 'space-around',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  innerContainer: {
+    flex: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    width: '100%',
+  },
+  loading: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  deck: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    marginTop: 20,
   },
   cards: {
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    width: '100%',
     margin: 10,
     fontWeight: 'bold',
-    textAlign: 'center',
-    alignSelf: 'center',
     fontSize: 45,
     color: '#444',
   },
-  cardTitle: {
-    fontSize: 30,
+  title: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    fontSize: 25,
+    fontWeight: 'bold',
     color: 'tomato',
   },
-  cardsNumber: {
+  numOfCard: {
     color: 'gray',
   },
-  nullCards: {
+  emptyCard: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  nullCardsText: {
+  emptyCardText: {
     fontWeight: 'bold',
     fontSize: 30,
     color: 'tomato',

@@ -31,13 +31,13 @@ export const AddNewCard = ({ route }) => {
         question,
         answers,
       };
-      console.log(deck.questions.length);
-      await addCardToDeck(title, card);
+      
+      const newcard = await addCardToDeck(title, card);
       navigation.navigate('Deck', {
         Title: title,
-        deck,
         numberOfCards: deck.questions.length,
       });
+
       setQuestion('');
       setAnswers('');
     } catch (error) {
@@ -56,12 +56,12 @@ export const AddNewCard = ({ route }) => {
         <Text style={styles.label}>Question</Text>
         <TextInput
           style={styles.input}
-          onChangeText={(question) => setQuestion(question)}
+          onChangeText={(questionValue) => setQuestion(questionValue)}
         />
         <Text style={styles.label}>Asnwer </Text>
         <TextInput
           style={styles.input}
-          onChangeText={(answers) => setAnswers(answers)}
+          onChangeText={(answer) => setAnswers(answer)}
         />
         <Button
           title=' add new card'

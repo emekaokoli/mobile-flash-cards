@@ -1,21 +1,15 @@
 import 'react-native-gesture-handler';
 import * as React from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Divider,
-} from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { Divider, Button } from 'react-native-elements';
 import { HeaderBackButton } from '@react-navigation/elements';
 import { useNavigation } from '@react-navigation/native';
 import { removeDeck } from '../utils/api';
 const { useState, useEffect } = React;
 
 export const ListDeckItems = ({ route }) => {
-  const { Title, numberOfCards:cards } = route.params;
-    const navigation = useNavigation();
-  
+  const { Title, numOfCards } = route.params;
+  const navigation = useNavigation();
 
   const handleDeleteDeck = (Title) =>
     removeDeck(Title).then(() => navigation.navigate('Home'));
@@ -33,38 +27,39 @@ export const ListDeckItems = ({ route }) => {
   }, [navigation]);
 
   return (
-    <View style={styles.listContainer}>
-      <View style={styles.listContainerTitle}>
-        <Text style={styles.listTitle}>{Title} Deck</Text>
-        <Text style={styles.numberOfDeckCards}>
-          {cards} {cards === 1 ? 'card' : 'cards'}
+    <View style={styles.container}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>{Title} Deck</Text>
+        <Text style={styles.numOfCard}>
+          {numOfCards} {numOfCards === 1 ? 'card' : 'cards'}
         </Text>
       </View>
       <View>
-        <TouchableOpacity
-          style={styles.button}
+        <Button
+          title='Add Card'
+          buttonStyle={styles.button}
           onPress={() =>
             navigation.navigate('AddCard', {
-              Title: route.params.Title,
+              Title,
             })
           }
-        >
-          <Text style={styles.buttonText}>Add Card</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.quizButton}
+        />
+
+        <Button
+          title='Start Quiz'
+          buttonStyle={styles.quizButton}
           onPress={() =>
             navigation.navigate('Quiz', {
               Title,
             })
           }
-        >
-          <Text style={styles.quizButtonText}>
-            Start Quiz
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.deleteDeck}
+        />
+
+        <Button
+          type='clear'
+          title='Delete Deck'
+          buttonStyle={styles.delete}
+          titleStyle={{ color: 'red' }}
           onPress={() =>
             Alert.alert(
               'Delete Deck?',
@@ -80,71 +75,54 @@ export const ListDeckItems = ({ route }) => {
               ],
             )
           }
-        >
-          <Text style={styles.deleteDeckText}>Delete Deck</Text>
-        </TouchableOpacity>
+        />
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  listContainer: {
+  container: {
     flex: 1,
     justifyContent: 'space-around',
   },
-  listContainerTitle: {
+  titleContainer: {
     alignSelf: 'center',
   },
 
-  listTitle: {
+  title: {
     fontWeight: 'bold',
     textAlign: 'center',
     alignSelf: 'center',
     fontSize: 30,
     color: 'tomato',
   },
-  numberOfDeckCards: {
+  numOfCard: {
     fontSize: 20,
     textAlign: 'center',
     color: '#b3b3b3',
   },
   button: {
-    justifyContent: 'center',
     alignSelf: 'center',
-    borderWidth: 2,
-    width: 150,
-    height: 60,
-    borderRadius: 8,
+    marginTop: 20,
+    backgroundColor: '#444',
+    borderRadius: 10,
+    width: 200,
+    height: 50,
   },
   quizButton: {
-    justifyContent: 'center',
     alignSelf: 'center',
-    borderWidth: 2,
-    width: 150,
-    height: 60,
-    borderRadius: 8,
-    marginTop: 10,
-    backgroundColor: '#444',
+    marginTop: 20,
+    backgroundColor: 'tomato',
+    borderRadius: 10,
+    width: 200,
+    height: 50,
   },
-  quizButtonText:{
-    alignSelf: 'center',
-    fontSize: 20,
-    color: 'white' 
-  },
-  buttonText: {
-    alignSelf: 'center',
-    fontSize: 20,
-    color:'tomato'
-  },
-  deleteDeck: {
+  delete: {
     marginTop: 30,
     padding: 5,
     justifyContent: 'center',
-  },
-  deleteDeckText: {
     alignSelf: 'center',
     fontSize: 16,
-    color: '#ff0000',
   },
 });
