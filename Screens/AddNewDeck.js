@@ -3,41 +3,42 @@ import {
   Text,
   View,
   TextInput,
-  Button,
   KeyboardAvoidingView,
   StyleSheet,
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {
+  useNavigation,
+  useFocusEffect,
+  useRoute,
+} from '@react-navigation/native';
 import { getDeck, getDecks, saveDeckTitle } from '../utils/api';
+import { Button } from 'react-native-elements';
 
-const { useState } = React;
+const { useState, useCallback } = React;
 
-export const AddNewDeck = ({ route }) => {
+export const AddNewDeck = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const [input, setInput] = useState('');
+  const [state, setState] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const disabledButton = input.length === 0;
-
-  const title = input || route.params?.Title;
+  const disabledButton = input?.length === 0;
 
   const handleAddNewDeck = async () => {
-  try {
-      const decks = await getDeck(input);
-      if (decks) {
-        alert('Deck already exist');
-      } else {
-        const deck = await saveDeckTitle(input, title);
-        navigation.navigate('Deck', {
-          Title: input,
-          deck: deck.questions.length,
-        });
-      }
-  } catch (error) {
-    console.log(error);
-  }
-
+    getDeck(input)
+      .then((data) => {
+        if (data !== null && data === input) {
+          alert('Deck already exists!');
+        } else {
+          saveDeckTitle(input);
+          navigation.navigate('Deck', { Title: input, numOfCards: 0 });
+        }
+      })
+      .catch((error) => console.log(error.message))
+      .finally(() =>  setInput(''));
   };
 
   return (
@@ -52,16 +53,16 @@ export const AddNewDeck = ({ route }) => {
 
         <TextInput
           style={styles.textInput}
-          placeholder='deck name'
+          placeholder='Enter a new deck name'
           value={input}
           onChangeText={(text) => setInput(text)}
         />
 
         <Button
           title='Add Deck'
+          buttonStyle={styles.button}
           onPress={handleAddNewDeck}
           disabled={disabledButton}
-          style={styles.button}
         />
       </View>
     </KeyboardAvoidingView>
@@ -82,11 +83,13 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
+    color: 'tomato',
     fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 20,
   },
   innerTitle: {
+    color: '#444',
     fontSize: 20,
     marginBottom: 20,
   },
@@ -95,7 +98,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'tomato',
     justifyContent: 'center',
     alignSelf: 'center',
-    borderWidth: 2,
+    //borderWidth: 2,
     width: 300,
     height: 60,
     borderRadius: 8,

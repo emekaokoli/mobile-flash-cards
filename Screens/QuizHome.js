@@ -5,30 +5,32 @@ import { StyleSheet, Text, View, Alert } from 'react-native';
 import { getDecks, reset } from '../utils/api';
 import { Button } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
-const { useEffect, useState } = React;
 
-export const DeckHome = () => {
+const { useEffect, useState, useCallback } = React;
+
+export const QuizHome = () => {
   const [loading, setLoading] = useState(false);
   const [decks, setDecks] = useState({});
   const isFocused = useIsFocused();
   const navigation = useNavigation();
   
-
-  useEffect(() => {
-    const fetchDecks = async () => {
-      setLoading(true);
-      try {
-        const data = await getDecks();
-        setDecks(data);
-        setLoading(false);
-      } catch (error) {
-        console.log(error.message);
-      }
-    }
-    isFocused && fetchDecks();
-  }, [isFocused]);
+ useFocusEffect(
+   React.useCallback(() => {
+     const fetchDecks = async () => {
+       setLoading(true);
+       try {
+         const data = await getDecks();
+         setDecks(data);
+         setLoading(false);
+       } catch (error) {
+         console.log(error.message);
+       }
+     };
+     fetchDecks();
+   }, []),
+ );
 
   const totalDecks = Object.keys(decks)?.length;
 
@@ -42,7 +44,7 @@ export const DeckHome = () => {
         <ScrollView contentContainerStyle={styles.innerContainer}>
           {Object.keys(decks)?.map((item) => {
             const { title, questions } = decks[item];
-            const numOfQuestions = questions.length;
+            const numOfQuestions = questions?.length;
             const numOfCards = numOfQuestions > 0 ? numOfQuestions : 0;
 
             return (
@@ -58,7 +60,7 @@ export const DeckHome = () => {
               >
                 <View style={styles.card}>
                   <Text style={styles.title}>{title}</Text>
-                  <Text style={styles.numOfCards}>
+                  <Text style={styles.numOfCard}>
                      {numOfCards} {numOfCards === 1 ? 'card' : 'cards'}
                   </Text>
                 </View>

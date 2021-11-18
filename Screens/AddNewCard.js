@@ -1,48 +1,48 @@
-import { TabRouter } from '@react-navigation/native';
 import * as React from 'react';
 import {
   Text,
   StyleSheet,
   View,
   KeyboardAvoidingView,
-  Button,
   TextInput,
   Platform,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {Button } from 'react-native-elements';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { addCardToDeck, getDeck } from '../utils/api';
 const { useState } = React;
 
-export const AddNewCard = ({ route }) => {
+export const AddNewCard = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
   const [question, setQuestion] = useState('');
-  const [answers, setAnswers] = useState('');
+  const [answer, setAnswer] = useState('');
 
-  const disabledButton = question.length === 0 || answers.length === 0;
+  const disabledButton = question.length === 0 || answer.length === 0;
 
   const title  = route.params?.Title;
 
-  const navigation = useNavigation();
-
   const handleAddNewCard = async () => {
-    if (question.length === 0 || answers.length === 0) return;
-    try {
-      const deck = await getDeck(title);
-      const card = {
-        question,
-        answers,
-      };
-      
-      const newcard = await addCardToDeck(title, card);
-      navigation.navigate('Deck', {
-        Title: title,
-        numberOfCards: deck.questions.length,
-      });
+    if (question.length === 0 || answer.length === 0) return;
 
-      setQuestion('');
-      setAnswers('');
-    } catch (error) {
-      console.log(error.message);
-    }
+    addCardToDeck(title, {
+      answer,
+      question,
+    })
+      .then(() => {
+        getDeck(title)
+          .then((deck) => {
+            navigation.navigate('Deck', {
+              Title: title,
+              deck,
+              numOfCards: deck.questions?.length,
+            });
+          }).catch((error) => alert(error.message)).finally(() => {
+            setQuestion('');
+            setAnswer('');
+          });
+      })
+      .catch((error) => alert(error.message));
   };
 
   return (
@@ -56,17 +56,17 @@ export const AddNewCard = ({ route }) => {
         <Text style={styles.label}>Question</Text>
         <TextInput
           style={styles.input}
-          onChangeText={(questionValue) => setQuestion(questionValue)}
+          onChangeText={(e) => setQuestion(e)}
         />
         <Text style={styles.label}>Asnwer </Text>
         <TextInput
           style={styles.input}
-          onChangeText={(answer) => setAnswers(answer)}
+          onChangeText={(e) => setAnswer(e)}
         />
         <Button
           title=' add new card'
           onPress={handleAddNewCard}
-          style={styles.button}
+          buttonStyle={(styles.button, { backgroundColor: 'tomato' })}
           disabled={disabledButton}
         />
       </View>
@@ -78,11 +78,11 @@ const styles = StyleSheet.create({
   constainer: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
   title: {
+    color: 'tomato',
     fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 20,
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'tomato',
     justifyContent: 'center',
     alignSelf: 'center',
-    borderWidth: 2,
+    //borderWidth: 2,
     width: 300,
     height: 60,
     borderRadius: 8,

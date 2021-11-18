@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { DeckHome } from '../Screens/DeckHome';
+import { QuizHome } from '../Screens/QuizHome';
 import { AddNewDeck } from '../Screens/AddNewDeck';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -32,13 +32,13 @@ export const AppHome = () => {
     >
       <Tab.Screen
         name='Quiz Home'
-        component={DeckHome}
+        component={QuizHome}
         options={{ tabBarLabel: 'Home!' }}
       />
       <Tab.Screen
         name='Add Deck'
         component={AddNewDeck}
-        options={{ tabBarLabel: 'AddDeck' }}
+        options={{ tabBarLabel: 'Add Deck' }}
       />
     </Tab.Navigator>
   );

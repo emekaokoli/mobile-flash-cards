@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 
 
 export const DECKS_STORAGE_KEY = 'DECKS_STORAGE';

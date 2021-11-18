@@ -4,15 +4,17 @@ import { Text, View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Divider, Button } from 'react-native-elements';
 import { HeaderBackButton } from '@react-navigation/elements';
 import { useNavigation } from '@react-navigation/native';
-import { removeDeck } from '../utils/api';
+import { removeDeckItem } from '../utils/api';
 const { useState, useEffect } = React;
 
 export const ListDeckItems = ({ route }) => {
   const { Title, numOfCards } = route.params;
   const navigation = useNavigation();
 
-  const handleDeleteDeck = (Title) =>
-    removeDeck(Title).then(() => navigation.navigate('Home'));
+  const deleteDeck = (params) =>
+    removeDeckItem(params)
+      .then(() => navigation.navigate('Home'))
+      .catch(() => Alert.alert('Error', 'Deck not found'));
 
   useEffect(() => {
     navigation.setOptions({
@@ -62,15 +64,15 @@ export const ListDeckItems = ({ route }) => {
           titleStyle={{ color: 'red' }}
           onPress={() =>
             Alert.alert(
-              'Delete Deck?',
-              'Are you sure you want to delete this deck?',
+              `Delete ${Title} Deck?`,
+              `Are you sure you want to delete ${Title} deck?`,
               [
                 {
                   text: 'Cancel',
                 },
                 {
                   text: 'Delete',
-                  onPress: () => handleDeleteDeck(Title),
+                  onPress: () => deleteDeck(Title),
                 },
               ],
             )
