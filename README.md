@@ -22,7 +22,7 @@ Install dependencies:
 `yarn install`
 
 Run the app: 
-`yarn start`
+`expo start`
 
 #### Emulators
 
@@ -30,14 +30,16 @@ Please ensure you have XCode or Android Studio installed and configured correctl
 
 Once you have an emulator available: 
 
-* Press `a` to open the Android emulator.
+goto `http://localhost:19002/`
+or 
+* Press `a` in the expo commandline cli to open the Android emulator.
 
 #### Emulated/Simulated Devices 
 
 The app was tested on: 
 
 * iPhone 11 iOS 15
-* Android Studio AVD: Pixel Q Android 10. pixel 2 Q Android 10.
+* Android Studio AVD: Pixel Q Android 10. Pixel_2_API_29.
 
 ### App 
 
@@ -48,7 +50,6 @@ Once you have the Expo app on  your device, make sure your computer (running exp
 **Please note:** Once the app is running via `yarn start`, ensure that in your browser, on http://localhost:19002/ that you see the words "Tunnel ready" *before* scanning and opening the QR Code. 
 
 Once you have scanned the code, your mobile device will open the app to the app home screen.
-
 
 
 ### about the developer
