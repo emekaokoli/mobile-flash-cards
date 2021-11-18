@@ -43,15 +43,6 @@ export const addCardToDeck = async (title, card) =>
     )
     .catch((error) => alert(`Failed to add the card!${error}`));
 
-//   return AsyncStorage.mergeItem(
-//     DECKS_STORAGE_KEY,
-//     JSON.stringify(
-//       storeData,
-//     ),
-//   ); // merge the new data with the existing one
-// })
-// .catch((error) => alert(`failed to add new card to the deck ${error}`));
-
 export const saveDeckTitle = async (deck, title) =>
   await AsyncStorage.mergeItem(
     DECKS_STORAGE_KEY,

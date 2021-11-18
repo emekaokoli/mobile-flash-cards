@@ -3,13 +3,15 @@ import * as React from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Divider, Button } from 'react-native-elements';
 import { HeaderBackButton } from '@react-navigation/elements';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { removeDeckItem } from '../utils/api';
 const { useState, useEffect } = React;
 
-export const ListDeckItems = ({ route }) => {
-  const { Title, numOfCards } = route.params;
+export const ListDeckItems = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+
+   const { Title, numOfCards } = route.params;
 
   const deleteDeck = (params) =>
     removeDeckItem(params)
