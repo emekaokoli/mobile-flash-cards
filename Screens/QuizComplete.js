@@ -40,6 +40,7 @@ export function QuizComplete() {
   const handleBackToHome = () => {
     navigation.navigate('Home');
   };
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Your {Title} Quiz Score</Text>

@@ -63,7 +63,7 @@ export const Quiz = () => {
   );
   const totalScore = correctAnswer + incorrectAnswer;
   const totalIncorrect = totalQuestions - correctAnswer;
-  const totalCorrect = totalQuestions - incorrectAnswer;
+  const totalCorrect = correctAnswer - incorrectAnswer;
   // const isCorrectAnswer = showQuestion ? correctAnswer : 0;
   // const isTotalQuestions = showQuestion ? totalQuestions : 0;
   // const isQuestionNumber = showQuestion ? questionNumber : 0;
@@ -129,12 +129,7 @@ export const Quiz = () => {
       setShowQuestion(false);
       handleNextQuestion();
     }
-    if (isIncorrect) {
-      setIncorrectAnswer(incorrectAnswer + 1);
-      setQuestionNumber(questionNumber + 1);
-      setShowQuestion(false);
-      handleNextQuestion();
-    }
+    
     if (isLastQuestion) {
       scheduleLocalNotification();
       handleQuizComplete();
